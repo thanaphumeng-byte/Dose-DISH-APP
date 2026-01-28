@@ -1,5 +1,28 @@
 import React, { useState } from 'react';
-import { Pill, Utensils, Search, AlertTriangle, Glasses, Zap } from 'lucide-react';
+import { Pill, Search, AlertTriangle, Glasses, Zap } from 'lucide-react';
+
+// Custom Icon: Fork & Spoon (More common in Asian contexts than Fork & Knife)
+const ForkAndSpoon = ({ className }: { className?: string }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width="24" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    {/* Fork */}
+    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
+    <path d="M7 2v20" />
+    {/* Spoon */}
+    <path d="M21 7c0-2.76-1.79-5-4-5s-4 2.24-4 5 1.79 5 4 5s4-2.24 4-5z" />
+    <path d="M17 12v10" />
+  </svg>
+);
 
 interface InteractionCheckerProps {
   onCheck: (food: string, drug: string) => void;
@@ -34,9 +57,9 @@ const InteractionChecker: React.FC<InteractionCheckerProps> = ({ onCheck, isLoad
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center border-2 border-white shadow-sm transform -translate-y-1/2">
                         <Pill className="w-7 h-7 text-blue-600" />
                     </div>
-                    {/* Food - Larger */}
+                    {/* Food (Fork & Spoon) - Larger */}
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-14 bg-emerald-50 rounded-full flex items-center justify-center border-2 border-white shadow-sm transform translate-y-1/2">
-                        <Utensils className="w-7 h-7 text-emerald-600" />
+                        <ForkAndSpoon className="w-7 h-7 text-emerald-600" />
                     </div>
                 </div>
 
@@ -68,7 +91,7 @@ const InteractionChecker: React.FC<InteractionCheckerProps> = ({ onCheck, isLoad
             <div className="relative">
               <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1 block">{texts.foodLabel}</label>
               <div className="flex items-center border border-slate-200 rounded-xl px-3 py-3 bg-slate-50 focus-within:ring-2 focus-within:ring-teal-500 focus-within:bg-white transition-all">
-                <Utensils className="w-5 h-5 text-slate-400 mr-3" />
+                <ForkAndSpoon className="w-5 h-5 text-slate-400 mr-3" />
                 <input
                   type="text"
                   value={food}
