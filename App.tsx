@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { UserProfile, AnalysisResult, ScanMode, MOCK_LAB_DATA, Language } from './types';
+import { UserProfile, AnalysisResult, ScanMode, MOCK_LAB_DATA, Language, ChatMessage } from './types';
 import ProfileForm from './components/ProfileForm';
 import Scanner from './components/Scanner';
 import LabChart from './components/LabChart';
 import InteractionChecker from './components/InteractionChecker';
-import { analyzeHealthData, checkSpecificInteraction } from './services/geminiService';
+import ChatInterface from './components/ChatInterface';
+import { analyzeHealthData, checkSpecificInteraction, sendChatMessage } from './services/geminiService';
 import { TRANSLATIONS } from './constants';
-import { LayoutDashboard, User, Activity, ShieldAlert, CheckCircle2, AlertTriangle, Menu, X, Stethoscope, Search, Zap, Globe } from 'lucide-react';
+import { LayoutDashboard, User, Activity, ShieldAlert, CheckCircle2, AlertTriangle, Menu, X, Pill, Zap, Search, Globe, MessageCircle, Utensils } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 function App() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [view, setView] = useState<'DASHBOARD' | 'PROFILE' | 'FDI_CHECK'>('DASHBOARD');
+  const [view, setView] = useState<'DASHBOARD' | 'PROFILE' | 'FDI_CHECK' | 'CHAT'>('DASHBOARD');
   const [isLoading, setIsLoading] = useState(false);
   const [lastAnalysis, setLastAnalysis] = useState<AnalysisResult | null>(null);
   const [language, setLanguage] = useState<Language>('en');
+  
+  // Chat State
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [isChatLoading, setIsChatLoading] = useState(false);
 
   // Load profile and language
   useEffect(() => {
@@ -101,6 +106,36 @@ function App() {
     setIsLoading(false);
   }
 
+  const handleSendChatMessage = async (text: string) => {
+    if (!profile) {
+        alert(t.common.alertProfile);
+        setView('PROFILE');
+        return;
+    }
+
+    const newUserMsg: ChatMessage = {
+        id: Date.now().toString(),
+        role: 'user',
+        text: text,
+        timestamp: Date.now()
+    };
+
+    setChatMessages(prev => [...prev, newUserMsg]);
+    setIsChatLoading(true);
+
+    const responseText = await sendChatMessage(chatMessages, text, profile, language);
+
+    const newAiMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'model',
+        text: responseText,
+        timestamp: Date.now()
+    };
+
+    setChatMessages(prev => [...prev, newAiMsg]);
+    setIsChatLoading(false);
+  };
+
   const renderAnalysisResult = () => {
     if (!lastAnalysis) return null;
 
@@ -160,9 +195,11 @@ function App() {
         
         {/* Header */}
         <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 h-16 flex items-center justify-between">
-           <div className="flex items-center gap-2">
-            <div className="bg-slate-900 p-1.5 rounded-lg">
-              <Stethoscope className="w-4 h-4 text-white" />
+           <div className="flex items-center gap-2.5">
+            {/* New FDI Related Logo */}
+            <div className="bg-gradient-to-br from-teal-500 to-emerald-600 p-2 rounded-xl shadow-lg shadow-teal-500/20 flex items-center justify-center gap-0.5">
+               <Pill className="w-4 h-4 text-white fill-white/10" />
+               <Zap className="w-3 h-3 text-amber-300 fill-amber-300 -ml-1 mt-1" />
             </div>
             <h1 className="text-lg font-bold text-slate-900 tracking-tight">Dose & Dish</h1>
           </div>
@@ -192,9 +229,17 @@ function App() {
           </div>
         </header>
 
-        {/* Scrollable Content */}
-        <main className="h-[calc(100vh-8rem)] md:h-[700px] overflow-y-auto pb-32">
-          <div className="px-6 py-6">
+        {/* Scrollable Content 
+            Logic: If in CHAT mode, use flex col and hide overflow to let ChatInterface handle scrolling internally.
+            Add bottom padding to container so Chat input is not covered by Bottom Nav.
+        */}
+        <main className={`transition-all duration-300 relative ${
+            view === 'CHAT' 
+            ? 'h-[calc(100vh-4rem)] md:h-[700px] overflow-hidden flex flex-col' 
+            : 'h-[calc(100vh-4rem)] md:h-[700px] overflow-y-auto pb-32'
+          }`}>
+          
+          <div className={`px-6 py-6 h-full ${view === 'CHAT' ? 'pb-24' : ''}`}>
             
             {view === 'PROFILE' && (
               <ProfileForm currentProfile={profile} onSave={handleSaveProfile} texts={t.profile} />
@@ -205,6 +250,18 @@ function App() {
                  <InteractionChecker onCheck={handleInteractionCheck} isLoading={isLoading} texts={t.fdi} />
                  {renderAnalysisResult()}
               </div>
+            )}
+
+            {view === 'CHAT' && profile && (
+                <div className="h-full animate-fade-in">
+                    <ChatInterface 
+                        messages={chatMessages} 
+                        onSendMessage={handleSendChatMessage} 
+                        isLoading={isChatLoading} 
+                        texts={t.chat}
+                        profile={profile}
+                    />
+                </div>
             )}
 
             {view === 'DASHBOARD' && (
@@ -265,6 +322,16 @@ function App() {
                <Zap className="w-6 h-6" />
             </div>
             <span className="text-[10px] font-bold">{t.nav.fdi}</span>
+          </button>
+
+          <button 
+            onClick={() => { setView('CHAT'); setLastAnalysis(null); }}
+            className={`flex flex-col items-center gap-1 w-16 transition-all ${view === 'CHAT' ? 'text-slate-900 scale-105' : 'text-slate-400 hover:text-slate-600'}`}
+          >
+             <div className={`p-1 rounded-full ${view === 'CHAT' ? 'bg-slate-100' : ''}`}>
+               <MessageCircle className="w-6 h-6" />
+             </div>
+            <span className="text-[10px] font-bold">{t.nav.chat}</span>
           </button>
 
           <button 

@@ -22,6 +22,13 @@ export interface AnalysisResult {
   mode: ScanMode | 'FDI_CHECK';
 }
 
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'model';
+  text: string;
+  timestamp: number;
+}
+
 export interface LabDataPoint {
   date: string;
   value: number;
