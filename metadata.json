@@ -1,0 +1,8 @@
+{
+  "name": "Dose & Dish",
+  "description": "AI-powered health companion for medication management, meal analysis, and lab result tracking using Gemini Vision.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
