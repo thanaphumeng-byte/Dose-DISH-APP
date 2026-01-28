@@ -78,15 +78,20 @@ function App() {
   };
 
   const handleInteractionCheck = async (food: string, drug: string) => {
-     if (!profile) {
-      alert(t.common.alertProfile);
-      setView('PROFILE');
-      return;
-    }
+    // Allow usage without profile (Guest Mode)
+    // We create a temporary empty profile context if one doesn't exist
+    const contextProfile: UserProfile = profile || {
+        name: 'Guest',
+        age: 0,
+        conditions: 'None',
+        medications: 'None',
+        allergies: 'None'
+    };
+
     setIsLoading(true);
     setLastAnalysis(null);
 
-    const resultText = await checkSpecificInteraction(food, drug, profile, language);
+    const resultText = await checkSpecificInteraction(food, drug, contextProfile, language);
 
     // Reuse similar heuristic logic
     let risk: AnalysisResult['riskLevel'] = 'INFO';
@@ -262,6 +267,22 @@ function App() {
                         profile={profile}
                     />
                 </div>
+            )}
+            
+            {view === 'CHAT' && !profile && (
+                 <div className="flex flex-col items-center justify-center h-full text-center space-y-4 p-6">
+                    <div className="bg-slate-100 p-4 rounded-full">
+                        <User className="w-12 h-12 text-slate-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-700">{t.common.alertProfile}</h3>
+                    <p className="text-sm text-slate-500">Please setup your profile to chat with the AI Pharmacist.</p>
+                    <button 
+                        onClick={() => setView('PROFILE')}
+                        className="bg-teal-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-teal-700 transition-colors"
+                    >
+                        Go to Profile
+                    </button>
+                 </div>
             )}
 
             {view === 'DASHBOARD' && (

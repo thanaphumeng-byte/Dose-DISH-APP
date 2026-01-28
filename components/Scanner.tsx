@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Camera, Upload, Loader2, Pill, Utensils, FileText, Type, Send, X, Circle, SwitchCamera } from 'lucide-react';
+import { Camera, Upload, Loader2, Pill, Utensils, FileText, Type, Send, X, Circle, SwitchCamera, Glasses, Zap } from 'lucide-react';
 import { ScanMode, InputMethod } from '../types';
 
 interface ScannerProps {
@@ -194,9 +194,35 @@ const Scanner: React.FC<ScannerProps> = ({ onScan, isLoading, texts }) => {
       {/* Input Area */}
       <div className="relative">
         {isLoading ? (
-          <div className="w-full h-80 bg-slate-50 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-slate-200">
-            <Loader2 className="w-10 h-10 text-teal-600 animate-spin mb-3" />
-            <p className="text-slate-600 font-medium">{texts.analyzing}</p>
+          <div className="w-full h-80 bg-slate-50 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-slate-200 relative overflow-hidden">
+            {/* Background Pulse */}
+            <div className="absolute w-64 h-64 bg-teal-500/5 rounded-full animate-ping"></div>
+            
+            <div className="relative w-32 h-32 flex items-center justify-center mb-4">
+              {/* Rotating Container for Food & Drug */}
+              <div className="absolute inset-0 w-full h-full animate-[spin_3s_linear_infinite]">
+                 {/* Pill Item */}
+                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center border-2 border-white shadow-sm transform -translate-y-1/2">
+                   <Pill className="w-5 h-5 text-blue-600" />
+                 </div>
+                 {/* Food Item */}
+                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center border-2 border-white shadow-sm transform translate-y-1/2">
+                   <Utensils className="w-5 h-5 text-emerald-600" />
+                 </div>
+              </div>
+
+              {/* Central Glasses (The Observer) */}
+              <div className="w-16 h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center border border-slate-100 z-10 relative">
+                <Glasses className="w-8 h-8 text-slate-700" />
+                {/* Small Zap icon appearing to show 'checking' */}
+                <div className="absolute -top-1 -right-1 bg-amber-100 rounded-full p-1 animate-pulse">
+                   <Zap className="w-3 h-3 text-amber-500" />
+                </div>
+              </div>
+            </div>
+
+            <p className="text-slate-700 font-bold text-lg animate-pulse">{texts.analyzing}</p>
+            <p className="text-slate-400 text-sm">Checking for Food-Drug Interactions...</p>
           </div>
         ) : inputMethod === 'CAMERA' ? (
           // Camera Mode
@@ -242,8 +268,6 @@ const Scanner: React.FC<ScannerProps> = ({ onScan, isLoading, texts }) => {
                          >
                             <div className="w-12 h-12 bg-white rounded-full"></div>
                          </button>
-                         {/* Placeholder for future features like toggle flash */}
-                         <div className="w-12 h-12"></div> 
                     </div>
                 </div>
             ) : preview ? (
