@@ -5,11 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dose & Dish</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              inter: ['Inter', 'sans-serif'],
+            },
+            keyframes: {
+              'fade-in': {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              'spin-slow': {
+                '0%': { transform: 'rotate(0deg)' },
+                '100%': { transform: 'rotate(360deg)' },
+              }
+            },
+            animation: {
+              'fade-in': 'fade-in 0.3s ease-out',
+              'spin-slow': 'spin-slow 8s linear infinite',
+            }
+          }
+        }
+      }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
       body {
         font-family: 'Inter', sans-serif;
-        background-color: #f8fafc;
+        background-color: #f8fafc; /* Fallback */
       }
       /* Custom scrollbar for markdown content */
       .prose pre {
@@ -18,20 +44,70 @@
         padding: 1rem;
         overflow-x: auto;
       }
+      
+      /* Robust Table Styling for Mobile */
+      .markdown-content {
+        overflow-x: auto; /* Allow horizontal scrolling */
+        -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+      }
+      
       .markdown-content table {
         width: 100%;
+        min-width: 500px; /* Force minimum width to prevent text squishing on mobile */
         border-collapse: collapse;
         margin-top: 1rem;
         margin-bottom: 1rem;
+        font-size: 0.9rem;
       }
-      .markdown-content th, .markdown-content td {
-        border: 1px solid #e2e8f0;
-        padding: 0.5rem;
-        text-align: left;
-      }
+      
       .markdown-content th {
-        background-color: #f1f5f9;
+        background-color: #f8fafc;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        color: #475569;
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 2px solid #e2e8f0;
+        white-space: nowrap; /* Prevent headers from wrapping */
+      }
+      
+      /* Dark mode overrides for Markdown tables via CSS (since prose plugin might handle some, but custom table needs help) */
+      .dark .markdown-content th {
+        background-color: #1e293b;
+        color: #94a3b8;
+        border-bottom: 2px solid #334155;
+      }
+      
+      .markdown-content td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: top; /* CRITICAL: Align text to top */
+        line-height: 1.6;
+        color: #334155;
+      }
+
+      .dark .markdown-content td {
+        border-bottom: 1px solid #334155;
+        color: #cbd5e1;
+      }
+
+      /* Specific column styling logic */
+      .markdown-content tr:last-child td {
+        border-bottom: none;
+      }
+      
+      /* Try to keep the first column (Status) tight and non-wrapping */
+      .markdown-content td:first-child {
+        white-space: nowrap;
+        width: 1%;
         font-weight: 600;
+      }
+      
+      /* Give the last column (Why?) plenty of breathing room */
+      .markdown-content td:last-child {
+        min-width: 200px;
       }
     </style>
   <script type="importmap">

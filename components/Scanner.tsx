@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Camera, Upload, Loader2, Pill, Utensils, FileText, Type, Send, X, Circle, SwitchCamera, Glasses, Zap } from 'lucide-react';
+import { Camera, Upload, Loader2, Pill, Soup, FileText, Type, Send, X, Circle, SwitchCamera, Search, Zap } from 'lucide-react';
 import { ScanMode, InputMethod } from '../types';
 
 interface ScannerProps {
@@ -124,9 +124,9 @@ const Scanner: React.FC<ScannerProps> = ({ onScan, isLoading, texts }) => {
   };
 
   const modes = [
-    { id: ScanMode.MEDICATION, label: texts.medication, icon: Pill, color: 'text-blue-500', bg: 'bg-blue-50' },
-    { id: ScanMode.MEAL, label: texts.meal, icon: Utensils, color: 'text-green-500', bg: 'bg-green-50' },
-    { id: ScanMode.LAB_RESULT, label: texts.lab, icon: FileText, color: 'text-purple-500', bg: 'bg-purple-50' },
+    { id: ScanMode.MEDICATION, label: texts.medication, icon: Pill, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/30' },
+    { id: ScanMode.MEAL, label: texts.meal, icon: Soup, color: 'text-green-500', bg: 'bg-green-50 dark:bg-green-900/30' },
+    { id: ScanMode.LAB_RESULT, label: texts.lab, icon: FileText, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/30' },
   ];
 
   const getPlaceholder = () => {
@@ -143,14 +143,14 @@ const Scanner: React.FC<ScannerProps> = ({ onScan, isLoading, texts }) => {
 
       {/* Mode Selector */}
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-bold text-slate-800">{texts.title}</h3>
-        <div className="flex bg-slate-100 p-1 rounded-lg">
+        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">{texts.title}</h3>
+        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
           <button
             onClick={() => {
                 setInputMethod('CAMERA');
                 setPreview(null);
             }}
-            className={`p-2 rounded-md transition-all ${inputMethod === 'CAMERA' ? 'bg-white shadow text-slate-900' : 'text-slate-400'}`}
+            className={`p-2 rounded-md transition-all ${inputMethod === 'CAMERA' ? 'bg-white dark:bg-slate-700 shadow text-slate-900 dark:text-white' : 'text-slate-400'}`}
           >
             <Camera className="w-4 h-4" />
           </button>
@@ -159,7 +159,7 @@ const Scanner: React.FC<ScannerProps> = ({ onScan, isLoading, texts }) => {
                 setInputMethod('TEXT');
                 stopCamera();
             }}
-            className={`p-2 rounded-md transition-all ${inputMethod === 'TEXT' ? 'bg-white shadow text-slate-900' : 'text-slate-400'}`}
+            className={`p-2 rounded-md transition-all ${inputMethod === 'TEXT' ? 'bg-white dark:bg-slate-700 shadow text-slate-900 dark:text-white' : 'text-slate-400'}`}
           >
             <Type className="w-4 h-4" />
           </button>
@@ -176,14 +176,14 @@ const Scanner: React.FC<ScannerProps> = ({ onScan, isLoading, texts }) => {
               onClick={() => handleModeChange(mode.id)}
               className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all border-2 ${
                 isSelected 
-                  ? 'border-slate-900 bg-slate-50' 
-                  : 'border-transparent bg-white hover:bg-slate-50'
+                  ? 'border-slate-900 dark:border-slate-500 bg-slate-50 dark:bg-slate-800' 
+                  : 'border-transparent bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700'
               }`}
             >
               <div className={`p-2 rounded-full mb-1 ${mode.bg}`}>
                 <Icon className={`w-5 h-5 ${mode.color}`} />
               </div>
-              <span className={`text-[10px] font-bold uppercase tracking-wide ${isSelected ? 'text-slate-900' : 'text-slate-400'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wide ${isSelected ? 'text-slate-900 dark:text-slate-200' : 'text-slate-400 dark:text-slate-500'}`}>
                 {mode.label}
               </span>
             </button>
@@ -194,7 +194,7 @@ const Scanner: React.FC<ScannerProps> = ({ onScan, isLoading, texts }) => {
       {/* Input Area */}
       <div className="relative">
         {isLoading ? (
-          <div className="w-full h-80 bg-slate-50 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-slate-200 relative overflow-hidden">
+          <div className="w-full h-80 bg-slate-50 dark:bg-slate-900 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-700 relative overflow-hidden transition-colors">
             {/* Background Pulse */}
             <div className="absolute w-64 h-64 bg-teal-500/5 rounded-full animate-ping"></div>
             
@@ -202,26 +202,26 @@ const Scanner: React.FC<ScannerProps> = ({ onScan, isLoading, texts }) => {
               {/* Rotating Container for Food & Drug */}
               <div className="absolute inset-0 w-full h-full animate-[spin_3s_linear_infinite]">
                  {/* Pill Item */}
-                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center border-2 border-white shadow-sm transform -translate-y-1/2">
-                   <Pill className="w-5 h-5 text-blue-600" />
+                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-700 shadow-sm transform -translate-y-1/2">
+                   <Pill className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                  </div>
                  {/* Food Item */}
-                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center border-2 border-white shadow-sm transform translate-y-1/2">
-                   <Utensils className="w-5 h-5 text-emerald-600" />
+                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-10 bg-emerald-100 dark:bg-emerald-900 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-700 shadow-sm transform translate-y-1/2">
+                   <Soup className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                  </div>
               </div>
 
-              {/* Central Glasses (The Observer) */}
-              <div className="w-16 h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center border border-slate-100 z-10 relative">
-                <Glasses className="w-8 h-8 text-slate-700" />
+              {/* Central Search Icon (The Observer) - Replaced Glasses */}
+              <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl shadow-lg flex items-center justify-center border border-slate-100 dark:border-slate-700 z-10 relative">
+                <Search className="w-8 h-8 text-slate-700 dark:text-slate-200" />
                 {/* Small Zap icon appearing to show 'checking' */}
-                <div className="absolute -top-1 -right-1 bg-amber-100 rounded-full p-1 animate-pulse">
+                <div className="absolute -top-1 -right-1 bg-amber-100 dark:bg-amber-900 rounded-full p-1 animate-pulse">
                    <Zap className="w-3 h-3 text-amber-500" />
                 </div>
               </div>
             </div>
 
-            <p className="text-slate-700 font-bold text-lg animate-pulse">{texts.analyzing}</p>
+            <p className="text-slate-700 dark:text-slate-200 font-bold text-lg animate-pulse">{texts.analyzing}</p>
             <p className="text-slate-400 text-sm">Checking for Food-Drug Interactions...</p>
           </div>
         ) : inputMethod === 'CAMERA' ? (
@@ -284,22 +284,22 @@ const Scanner: React.FC<ScannerProps> = ({ onScan, isLoading, texts }) => {
               </div>
             ) : (
               // Initial State: Start Camera Button
-              <div className="w-full h-80 bg-white rounded-2xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center group relative overflow-hidden">
+              <div className="w-full h-80 bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center group relative overflow-hidden transition-colors">
                 <button
                   onClick={startCamera}
-                  className="flex flex-col items-center justify-center w-full h-full hover:bg-teal-50 transition-colors z-10"
+                  className="flex flex-col items-center justify-center w-full h-full hover:bg-teal-50 dark:hover:bg-slate-700 transition-colors z-10"
                 >
-                    <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm">
-                    <Camera className="w-10 h-10 text-teal-600" />
+                    <div className="w-20 h-20 bg-teal-100 dark:bg-teal-900/50 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm">
+                    <Camera className="w-10 h-10 text-teal-600 dark:text-teal-400" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-800 mb-1">{texts.tapToScan}</h3>
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">{texts.tapToScan}</h3>
                     <p className="text-sm text-slate-400">Real-time AI Analysis</p>
                 </button>
                 
                 {/* Fallback Upload Link */}
                 <button 
                     onClick={triggerFileSelect}
-                    className="absolute bottom-4 text-xs text-slate-400 font-semibold uppercase tracking-wider hover:text-teal-600 z-20 flex items-center gap-1 bg-white/80 px-3 py-1 rounded-full border border-slate-200"
+                    className="absolute bottom-4 text-xs text-slate-400 font-semibold uppercase tracking-wider hover:text-teal-600 dark:hover:text-teal-400 z-20 flex items-center gap-1 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-600"
                 >
                     <Upload className="w-3 h-3" /> {texts.orUpload}
                 </button>
@@ -314,18 +314,18 @@ const Scanner: React.FC<ScannerProps> = ({ onScan, isLoading, texts }) => {
           </>
         ) : (
           // Text Mode
-          <div className="w-full h-80 bg-white rounded-2xl border border-slate-200 p-4 flex flex-col">
+          <div className="w-full h-80 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex flex-col transition-colors">
             <textarea
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
               placeholder={getPlaceholder()}
-              className="flex-1 w-full resize-none outline-none text-slate-700 placeholder-slate-400 text-lg"
+              className="flex-1 w-full resize-none outline-none text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 text-lg bg-transparent"
             />
             <div className="flex justify-end mt-2">
               <button
                 onClick={handleTextSubmit}
                 disabled={!textInput.trim()}
-                className="bg-slate-900 text-white px-6 py-3 rounded-xl flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-800 transition-colors font-semibold"
+                className="bg-slate-900 dark:bg-slate-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-800 dark:hover:bg-slate-600 transition-colors font-semibold"
               >
                 <Send className="w-5 h-5" />
                 {texts.analyzeBtn}
